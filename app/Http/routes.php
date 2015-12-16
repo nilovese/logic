@@ -13,7 +13,14 @@
 
 Route::get('/', function () {
 
-    //return \App\User::all();
+    if(\Cookie::get("identifier") != "")
+    {
+
+        $user = \App\User::where(["identifier"=>\Cookie::get("identifier")])->first();
+        \Auth::login($user);
+        //return $next($request);
+    }
+    
     return view('home.home');
 });
 
