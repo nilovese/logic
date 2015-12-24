@@ -29,8 +29,8 @@
               <li role="presentation"><a href="{{ url('auth/logout') }}">Logout</a></li>
             @else
               
-              <li role="presentation"><a href="{{ url('auth/register') }}">Register</a></li>
-              <li role="presentation"><a href="{{ url('auth/login') }}">Login</a></li>
+              <li role="presentation"><a href="{{ url('register') }}">Register</a></li>
+              <li role="presentation"><a href="{{ url('login') }}">Login</a></li>
             @endif
             
           </ul>

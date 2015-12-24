@@ -22,6 +22,8 @@ class AuthController extends Controller
     |
     */
 
+    protected $curlManager;
+
     use AuthenticatesAndRegistersUsers, ThrottlesLogins;
 
 
@@ -75,6 +77,6 @@ class AuthController extends Controller
 
     /*public function postLogin(Request $request)
     {
-        
+
     }*/
 }

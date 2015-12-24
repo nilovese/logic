@@ -21,7 +21,6 @@ class User extends Model implements AuthenticatableContract,
      *
      * @var string
      */
-    protected $connection ="mysql2";
     
     protected $table = 'users';
 
@@ -30,12 +29,12 @@ class User extends Model implements AuthenticatableContract,
      *
      * @var array
      */
-    protected $fillable = ['name', 'email', 'password',"identifier"];
+    protected $fillable = ['name', 'email','id','access_token'];
 
     /**
      * The attributes excluded from the model's JSON form.
      *
      * @var array
      */
-    protected $hidden = ['password', 'remember_token'];
+    protected $hidden = [];
 }

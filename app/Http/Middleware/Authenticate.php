@@ -37,14 +37,6 @@ class Authenticate
     {
         if ($this->auth->guest()) {
 
-            
-            if(\Cookie::get("identifier") != "")
-            {
-
-                $user = User::where(["identifier"=>\Cookie::get("identifier")])->first();
-                \Auth::login($user);
-                return $next($request);
-            }
 
             if ($request->ajax()) {
                 return response('Unauthorized.', 401);

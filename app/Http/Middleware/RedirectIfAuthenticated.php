@@ -35,12 +35,7 @@ class RedirectIfAuthenticated
      */
     public function handle($request, Closure $next)
     {
-        if(\Cookie::get("identifier") != "")
-        {
-            $user = User::where(["identifier"=>\Cookie::get("identifier")])->first();
-            \Auth::login($user);
-            //return $next($request);
-        }
+
         if ($this->auth->check()) {
             return redirect('/dashboard');
         }
