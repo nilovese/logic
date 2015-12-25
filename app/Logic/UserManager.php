@@ -7,15 +7,57 @@
  */
 
 namespace App\Logic;
-
-
 use App\User;
 
 class UserManager
 {
+    protected $curlManager;
+    protected $request;
+
+    public function __construct(CurlManager $curlManager)
+    {
+        $this->curlManager = $curlManager;
+
+    }
+
+    public function SaveUserFromCurl($request)
+    {
+        $this->request = $request;
+        $this->curlManager->SetCurlUrl(env("api_url")."oauth/access_token");
+
+        $this->curlManager->SetCurlData(
+            [
+                "client_secret" => env("clitnt_secret"),
+                "client_id" => env("clitnt_id"),
+                "redirect_uri" => env("redirect_uri"),
+                "code" => $this->request->code,
+                "state" => time(),
+                "grant_type" => "authorization_code"
+            ]
+        );
+
+        $response = $this->curlManager->ProcessCurl();
+        $response = json_decode($response,TRUE);
+
+        $user = $this->curlManager->ExecuteGet(env("api_url")."user/info?access_token={$response["access_token"]}");
+
+        $userData = json_decode($user,TRUE);
+
+        $userData["access_token"] = $response["access_token"];
+
+        return $this->SaveUser($userData);
+    }
+
+
     public function SaveUser($data)
     {
+        $user = User::find($data["id"]);
+        if($user)
+        {
+            $user->update($data);
+            return $user;
 
+        }
         return User::create($data);
     }
 }
