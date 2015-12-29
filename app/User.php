@@ -37,4 +37,10 @@ class User extends Model implements AuthenticatableContract,
      * @var array
      */
     protected $hidden = [];
+
+
+    public function Profiles()
+    {
+        return $this->hasMany("App\Profile");
+    }
 }

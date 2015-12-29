@@ -7,6 +7,7 @@
  */
 
 namespace App\Logic;
+use App\Profile;
 use App\User;
 
 class UserManager
@@ -17,14 +18,12 @@ class UserManager
     public function __construct(CurlManager $curlManager)
     {
         $this->curlManager = $curlManager;
-
     }
 
     public function SaveUserFromCurl($request)
     {
         $this->request = $request;
         $this->curlManager->SetCurlUrl(env("api_url")."oauth/access_token");
-
         $this->curlManager->SetCurlData(
             [
                 "client_secret" => env("clitnt_secret"),
@@ -35,16 +34,11 @@ class UserManager
                 "grant_type" => "authorization_code"
             ]
         );
-
         $response = $this->curlManager->ProcessCurl();
         $response = json_decode($response,TRUE);
-
         $user = $this->curlManager->ExecuteGet(env("api_url")."user/info?access_token={$response["access_token"]}");
-
         $userData = json_decode($user,TRUE);
-
         $userData["access_token"] = $response["access_token"];
-
         return $this->SaveUser($userData);
     }
 
@@ -60,4 +54,44 @@ class UserManager
         }
         return User::create($data);
     }
+
+
+    public function SaveProfile($request,$token)
+    {
+        $this->request = $request->all();
+        $this->request["access_token"] = $token;
+        $this->request["client_id"] = env("clitnt_id");
+        $this->curlManager->SetCurlUrl(env("api_url")."profile/save");
+        $this->curlManager->SetCurlData($this->request);
+        $response = $this->curlManager->ProcessCurl();
+        $response = json_decode($response,TRUE);
+        return Profile::create($response);
+    }
+
+    public function EditProfile($request,$token)
+    {
+        $this->request = $request->all();
+        $this->request["access_token"] = $token;
+        $this->request["client_id"] = env("clitnt_id");
+        $this->curlManager->SetCurlUrl(env("api_url")."profile/edit");
+        $this->curlManager->SetCurlData($this->request);
+        $response = $this->curlManager->ProcessCurl();
+        $response = json_decode($response,TRUE);
+        $profile = Profile::find($response["id"]);
+        $profile->update($response);
+        return $profile;
+    }
+
+
+    public function Profiles($user_id)
+    {
+        return Profile::where(["user_id"=>$user_id])->get();
+    }
+
+
+    public function GetProfile($profile_id)
+    {
+        return Profile::find($profile_id);
+    }
+
 }

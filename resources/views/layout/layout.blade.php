@@ -26,7 +26,7 @@
             <li role="presentation"><a href="/">Home</a></li>
             @if(\Auth::check())
               <li role="presentation"><a href="{{ url('dashboard') }}">Dashboard</a></li>
-              <li role="presentation"><a href="{{ url('auth/logout') }}">Logout</a></li>
+              <li role="presentation"><a href="{{ url('logout') }}">Logout</a></li>
             @else
               
               <li role="presentation"><a href="{{ url('register') }}">Register</a></li>

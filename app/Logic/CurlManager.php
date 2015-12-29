@@ -12,6 +12,7 @@ namespace app\Logic;
 class CurlManager
 {
     protected $curlurl;
+
     protected $curl_data;
 
     public function SetCurlUrl($curlurl)
@@ -27,7 +28,8 @@ class CurlManager
 
     public function ProcessCurl()
     {
-
+        unset($this->curl_data["_token"]);
+        //dd($this->curl_data);
         $ch = curl_init();
         $postvars = '';
         foreach($this->curl_data as $key=>$value) {
@@ -40,6 +42,7 @@ class CurlManager
         curl_setopt($ch,CURLOPT_CONNECTTIMEOUT ,3);
         curl_setopt($ch,CURLOPT_TIMEOUT, 20);
         $response = curl_exec($ch);
+        //echo $response;
         curl_close ($ch);
         return $response;
     }

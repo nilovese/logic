@@ -19,17 +19,37 @@ class UserController extends Controller
 
     public function ProcessAuthCode(Request $request)
     {
-        return $this->userManager->SaveUserFromCurl($request);
+        Auth::login($this->userManager->SaveUserFromCurl($request));
+        return redirect(url("profile/all"));
     }
 
 
     public function Profiles()
     {
+        return view("profile.profiles",["profiles"=>Auth::user()->profiles]);
+    }
 
+    public function SaveProfile(Request $request)
+    {
+        $this->userManager->SaveProfile($request,Auth::user()->access_token);
+        return redirect(route("profiles"));
+    }
+
+    public function Edit($profile_id)
+    {
+        $profile = $this->userManager->GetProfile($profile_id);
+        //dd($profile);
+        return view("profile.edit",["profile" => $profile]);
+    }
+
+    public function SaveEditProfile(Request $request)
+    {
+        $this->userManager->EditProfile($request,Auth::user()->access_token);
+        return redirect(route("profiles"));
     }
 
     public function NewProfile()
     {
-        
+        return view("profile.new");
     }
 }
