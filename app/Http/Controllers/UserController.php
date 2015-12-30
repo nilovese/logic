@@ -19,8 +19,11 @@ class UserController extends Controller
 
     public function ProcessAuthCode(Request $request)
     {
-        Auth::login($this->userManager->SaveUserFromCurl($request));
+
+        $user = $this->userManager->SaveUserFromCurl($request);
+        Auth::login($user);
         return redirect(url("profile/all"));
+
     }
 
 

@@ -77,7 +77,12 @@ Route::group(['prefix' => 'profile', 'middleware' => 'auth'], function()
     Route::get("all",["as"=>"profiles","uses"=>"UserController@Profiles"]);
 });
 
-Route::get('auth/logout', function()
+
+Route::group(['prefix' => 'sync'], function()
 {
-    return \Auth::logout();
+    Route::post("profile",["as"=>"syncprofile" ,"uses"=>"UserController@SaveProfile"]);
 });
+
+
+
+

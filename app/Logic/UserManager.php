@@ -22,6 +22,7 @@ class UserManager
 
     public function SaveUserFromCurl($request)
     {
+        
         $this->request = $request;
         $this->curlManager->SetCurlUrl(env("api_url")."oauth/access_token");
         $this->curlManager->SetCurlData(
@@ -35,22 +36,24 @@ class UserManager
             ]
         );
         $response = $this->curlManager->ProcessCurl();
-        $response = json_decode($response,TRUE);
-        $user = $this->curlManager->ExecuteGet(env("api_url")."user/info?access_token={$response["access_token"]}");
+        $response_decode = json_decode($response,TRUE);
+        $access_token = $response_decode["access_token"];
+        $user = $this->curlManager->ExecuteGet(env("api_url")."user/info?access_token=".$access_token);
         $userData = json_decode($user,TRUE);
-        $userData["access_token"] = $response["access_token"];
+        $userData["access_token"] = $response_decode["access_token"];
+        $userData["root_id"] = $userData["id"];
         return $this->SaveUser($userData);
     }
 
 
     public function SaveUser($data)
     {
-        $user = User::find($data["id"]);
+        $user = User::where(["root_id"=>$data["id"]])->first();
+        unset($data["id"]);
         if($user)
         {
             $user->update($data);
             return $user;
-
         }
         return User::create($data);
     }
